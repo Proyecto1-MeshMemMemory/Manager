@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class GsonParser {
+    
+    private int _puertoNodo, _cantBytes;
 
     public static void main(String[] args) {
 
@@ -23,14 +25,20 @@ public class GsonParser {
 
         try (Reader reader = new FileReader("C:\\Users\\Luis08\\Desktop\\archivo.json")) {
             
-            JsonElement json = gson.fromJson(reader, JsonElement.class);
-            String jsonInString = gson.toJson(json);
-            System.out.println(jsonInString);
+            ArchivoJson json = gson.fromJson(reader, ArchivoJson.class);
+            
+            //JsonElement json = gson.fromJson(reader, JsonElement.class);
+            
+            
+            //este es el mensaje
+            //String jsonInString = gson.toJson(json);
+            System.out.println(json.getId());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
 
     }
-
+    
 }

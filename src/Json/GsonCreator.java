@@ -15,16 +15,17 @@ public class GsonCreator {
     public static void main(String[] args) {
 
         ArchivoJson archivo = crearArchivo();
-
-        //convierte objeto a json string
         Gson gson = new Gson();
+        
+        //convierte objeto a json string
         String json = gson.toJson(archivo);
         System.out.println(json);
 
-        //convierte objeto a json string y lo guarda en el directorio
+        //crea el objeto json y lo guarda en el directorio
         try (FileWriter writer = new FileWriter("C:\\Users\\Luis08\\Desktop\\archivo.json")) {
 
             gson.toJson(archivo, writer);
+            
 
         } catch (IOException e) {
             e.printStackTrace();
