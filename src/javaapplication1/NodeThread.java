@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package javaapplication1;
-
 /**
  * Clase NodeThread encargada del hilo para 
  * eliminar los tokens con un tiempo de caducidad.
@@ -26,6 +25,7 @@ public class NodeThread extends Thread{
     public void run(){  
         for(int i = 0; i < 4; i++){
             _time.Display();
+            // Llamar funcion para eliminar nodos caducados.
             _time.nodeExpired();
             // Pausar el hilo n segundos.
             this.Wait(4);  

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package javaapplication1;
-
 /**
  * Clase nodo para guardar la informacion.
  * @author betolan
@@ -21,21 +20,32 @@ public class ListNode{
         this._value = 0;
         this._next = null;
     }
-    
-    // Métodos get y set para los atributos. 
-    public long getValue(){
-        return _value;
-    }
-
+    /**
+     * Metodo tipo void para asignar el tiempo de creacion.
+     * @param valor 
+     */
     public void setValue(long valor){
         this._value = valor;
     }
-
-    public ListNode getNext(){
-        return _next;
+    /**
+     * Metodo tipo long para retornar el tiempo de creacion.
+     * @return _value
+     */ 
+    public long getValue(){
+        return _value;
     }
-
+    /**
+     * Metodo tipo void para asignar el nodo siguiente.
+     * @param siguiente 
+     */
     public void setNext(ListNode siguiente){
         this._next = siguiente;
     }   
+    /**
+     * Metodo para extraer el siguiente.
+     * @return _next
+     */
+    public ListNode getNext(){
+        return _next;
+    }
 }
