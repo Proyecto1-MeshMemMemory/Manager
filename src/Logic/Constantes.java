@@ -20,7 +20,8 @@ public interface Constantes {
             + "nopqrstuvwxyz1234567890";
     
     /**
-     * keywords para ir abriendo los Json que nos envia el API
+     * keywords para ir abriendo los Json que nos envia el API y 
+     * los UUIDs
      */
     
     public static final String CHECK="check";
@@ -28,7 +29,15 @@ public interface Constantes {
     public static final String OPERATION="operation";
     public static final String MESSAGE="message";
     public static final String TOKEN="token";
-    public static final String SIZE="size";
+    public static final String SUPER_NODE="SuNd";
+    public static final String SPACE="space";
+    public static final String SIZE="token";
+    public static final String IP="ip";
+    public static final String PORT="port";
+    public static final String PHONE_NUMBER="numTel";
+    public static final String TOTAL_BYTES_NODE="cantBytes";
+    public static final String STATE="estado";
+    
     
     /*constantes para el manejo de Json*/
     /**
@@ -72,8 +81,10 @@ public interface Constantes {
     public static final int SIETE=7;
     public static final int OCHO=8;
     public static final int DIEZ=10;
-    public static final long ALIVE_TIME_FOR_TOKENS=120;
-    
+    public static final int ALIVE_TIME_FOR_TOKENS=120;
+    public static final int MASTER=0;
+    public static final int SLAVE=1;
+    public static final int TOKEN_SIZE=64;
     /* mensajes de retorno para el API*/
     
     public static final String WRONG_TOKEN="{\"check\":2}";
@@ -99,12 +110,13 @@ public interface Constantes {
     /**
      * metodo implementado para obtener un token para enviarselo a la 
      * persona que se conecta
+     * @param pTokenSize
      * @return retorna un dato del tipo string
      */
-    default String getToken(){
+    default String getToken(int pTokenSize){
         char[] temp;
-        temp=new char[64];
-        for(int i=0; i <64; i++){
+        temp=new char[pTokenSize];
+        for(int i=0; i <pTokenSize; i++){
             int number=generaNumeroAleatorio(0,LETTERS.length()-1);
             temp[i]=LETTERS.charAt(number);
         }
