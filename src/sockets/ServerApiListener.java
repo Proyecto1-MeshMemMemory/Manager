@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Clase para hacer la escucha de los api que se conectan.
  * @author ellioth
  */
 public class ServerApiListener implements Runnable, Constantes{
@@ -26,6 +26,11 @@ public class ServerApiListener implements Runnable, Constantes{
     private boolean _flag;
     private String _msgFromClient;
     
+    /**
+     * Constructor de la clase, recibe un puerto y establece el server en ese 
+     * puerto, recibe un socket que es en cual va a escuchar a las apis.
+     * @param pSocket dato tipo Socket.
+     */
     public ServerApiListener(Socket pSocket){
         try {
             _socketToApi=pSocket;
@@ -38,12 +43,20 @@ public class ServerApiListener implements Runnable, Constantes{
         }
     }
     
+    /**
+     * metodo para estebelcer la bandera de poner en falso la bandera de
+     * mensaje y recibir nuevos mensajes del API.
+     */
     public void setFlagListenerFalse(){
         synchronized(this){
             _flag=false;
         }
     }
     
+    /**
+     * metodo para obtener la bandera que escucha, si es positiva o negativa.
+     * @return 
+     */
     public boolean getFlagListener(){
         boolean temp;
         synchronized(this){
@@ -52,6 +65,10 @@ public class ServerApiListener implements Runnable, Constantes{
         return temp;
     }
     
+    /**
+     * metodo para obtener los mensajes de un cliente api
+     * @return retorna un dato tipo string.
+     */
     public String getMsgFromApiClient(){
         String temp="";
         synchronized(this){
@@ -60,6 +77,10 @@ public class ServerApiListener implements Runnable, Constantes{
         return temp;
     }
     
+    /**
+     * metodo para enviarle un mensaje a un cliente api.
+     * @param pJsonSendToApi dato tipo string.
+     */
     public void sendToClientApi(String pJsonSendToApi){
         try {
             _out.write(pJsonSendToApi.getBytes());
@@ -70,6 +91,10 @@ public class ServerApiListener implements Runnable, Constantes{
         }
     }
     
+    /**
+     * hilo para estar bloqueandose y esperando a que se le permita recibir 
+     * nuevos mensajes.
+     */
     @Override
     public void run() {
         try {
