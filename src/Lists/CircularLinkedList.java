@@ -41,25 +41,26 @@ public class CircularLinkedList implements Constantes{
             _totalSpace+=pNode.getTotalBytes();
             return MASTER;
         }
-        int pos=CERO;
-        while(aux!=_fin){
+        int i =0;
+        for(; i<_sizeLista;i++){
             if((aux.getSlave()==null) && (aux.getTotalBytes()==pNode.getTotalBytes())){
                 aux.setSlave(pNode);
                 _totalSpace+=pNode.getTotalBytes();
                 _nodeFinded = true;
+                _sizeLista++;
                 break;
             }
             aux=aux.getNext();
-            ++pos;
         }
         if(aux.getSlave()==null && (aux.getTotalBytes()==pNode.getTotalBytes()) 
                 && (_nodeFinded == false)){
             aux.setSlave(pNode);
             _totalSpace+=pNode.getTotalBytes();
+            _sizeLista++;
             return SLAVE;
         }
         else if(_nodeFinded == false){
-            SuperNodeMemory temp= new SuperNodeMemory(pNode,pos);
+            SuperNodeMemory temp= new SuperNodeMemory(pNode,i);
             temp.setNext(_inicio);
             temp.setPrevious(_fin);
             _fin=temp;
@@ -84,22 +85,29 @@ public class CircularLinkedList implements Constantes{
         }
         if(_inicio.getSlave()==null){
             if(_inicio.getMaster().getID()==pId){
-                _inicio=_fin=null;
+                synchronized(this){
+                    _inicio=_inicio.getNext();
+                    _fin.setNext(_inicio);
+                }
                 return;
             }
         }
         else if(_inicio.getSlave()!=null){
             if(_inicio.getMaster().getID()==pId){
-                _inicio.setSlaveToMaster();
+                synchronized(this){
+                    _inicio.setSlaveToMaster();
+                }
                 return;
             }
             else if(_inicio.getSlave().getID()==pId){
-                _inicio.setSlave(null);
+                synchronized(this){
+                    _inicio.setSlave(null);
+                }
                 return;
             }
         }
         SuperNodeMemory temp=_inicio.getNext();
-        while(temp!=_fin){
+        for(int i =0; i<_sizeLista; i++){
             if(temp.getMaster().getID()==pId){
                 break;
             }
@@ -111,35 +119,49 @@ public class CircularLinkedList implements Constantes{
         if(temp==_fin){
             if(_fin.getSlave()==null){
                 if(_fin.getMaster().getID()==pId){
-                    _fin=_fin.getPrevious();
-                    _inicio.setPrevious(_fin);
+                    synchronized(this){
+                        _fin=_fin.getPrevious();
+                        _inicio.setPrevious(_fin);
+                    }
                     return;
                 }
             }
             else if(_fin.getSlave()!=null){
                 if(_fin.getMaster().getID()==pId){
-                    _fin.setSlaveToMaster();
+                    synchronized(this){
+                        _fin.setSlaveToMaster();
+                    }
                     return;
                 }
                 else if(_fin.getSlave().getID()==pId){
-                    _inicio.setSlave(null);
+                    synchronized(this){
+                        _inicio.setSlave(null);
+                    }
                     return;
                 }
             }
         }
-        if(temp.getSlave()==null){
+        if (temp==null)
+            return;
+        else if(temp.getSlave()==null){
             if(temp.getMaster().getID()==pId){
-                SuperNodeMemory last=temp.getPrevious();
-                last.setNext(temp.getNext());
-                temp.getNext().setPrevious(last);
+                synchronized(this){
+                    SuperNodeMemory last=temp.getPrevious();
+                    last.setNext(temp.getNext());
+                    temp.getNext().setPrevious(last);
+                }
             }
         }
         else if(temp.getSlave()!=null){
             if(temp.getMaster().getID()==pId){
-                temp.setSlaveToMaster();
+                synchronized(this){
+                    temp.setSlaveToMaster();
+                }
             }
             else if(temp.getSlave().getID()==pId){
-                temp.setSlave(null);
+                synchronized(this){
+                    temp.setSlave(null);
+                }
             }
         }
     }
@@ -158,5 +180,13 @@ public class CircularLinkedList implements Constantes{
      */
     public SuperNodeMemory getTail(){
         return _fin;
+    }
+    
+    /**
+     * metodo para obtener el tamaño de la lista circular.
+     * @return 
+     */
+    public int getSize(){
+        return _sizeLista;
     }
 }

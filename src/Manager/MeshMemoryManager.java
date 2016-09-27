@@ -15,8 +15,6 @@ import sockets.ServerApiListener;
 import Lists.TokenList;
 import java.net.Socket;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sockets.ServerAndroidListener;
@@ -34,6 +32,7 @@ public class MeshMemoryManager implements Constantes{
     private int _countServerListenerAndroid;
     private TokenList _tokenList;
     private CircularLinkedList _MemoryList;
+    private int _port;
     
     /**
      * constructor de la clase, recibe un puerto para establecer el 
@@ -43,6 +42,7 @@ public class MeshMemoryManager implements Constantes{
      * instacear los servers, tanto para Api's como para Android's.
      */
     public MeshMemoryManager(int pPort){
+        _port=pPort;
         _serverAPI= new ServerListener(pPort);
         _serverAndroid= new ServerAndroidListener(pPort+UNO);
         _countServerListenerAPI=0;
@@ -83,8 +83,6 @@ public class MeshMemoryManager implements Constantes{
                     temp.setFlagListenerFalse();
                 }
             }
-            
-            
         }
     }
     
@@ -100,7 +98,7 @@ public class MeshMemoryManager implements Constantes{
         _tokenList.add(newToken);
         temp.setFlagListenerFalse();
         (new Thread(temp)).start();
-        System.out.println("Token enviado a nuevo cliente:"+newJsonToken);
+        cout("Token enviado a nuevo cliente:"+newJsonToken);
         _countServerListenerAPI=_serverAPI.getSizeListListener();
     }
     
@@ -154,7 +152,7 @@ public class MeshMemoryManager implements Constantes{
             _countServerListenerAPI=_serverAPI.getSizeListListener();
 
         } catch (JSONException ex) {
-            Logger.getLogger(MeshMemoryManager.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: agregacion de un nuevo nodo android");
         }
     }
     
@@ -175,7 +173,7 @@ public class MeshMemoryManager implements Constantes{
                 return newJsonToSend.toString();
             }
             if(pCheck==-UNO){
-                System.out.println("Error: pedido invalido por parte del cliente");
+                cout("Error: pedido invalido por parte del cliente");
                 return INVALID_OPERATION;
             }
             newJsonToSend.put(CHECK, pCheck);
@@ -187,7 +185,7 @@ public class MeshMemoryManager implements Constantes{
             }
             return newJsonToSend.toString();
         } catch (JSONException ex) {
-            System.out.println("Error: no se ha podido crear el Json");
+            cout("Error: no se ha podido crear el Json");
         }
         return INVALID_OPERATION;
     }
@@ -207,7 +205,7 @@ public class MeshMemoryManager implements Constantes{
             newJsonToSend.put(ID, pId);
             return newJsonToSend.toString();
         } catch (JSONException ex) {
-            System.out.println("Error: no se ha podido crear el Json");
+            cout("Error: no se ha podido crear el Json");
         }
         return "";
     }
@@ -228,7 +226,7 @@ public class MeshMemoryManager implements Constantes{
                 String newToken=getToken(TOKEN_SIZE);
                 String temp=createJson(CERO, "", "", newToken);
                 _tokenList.add(newToken);
-                System.out.println("Token nuevo enviado");
+                cout("Token nuevo enviado");
                 return temp;
             }
             //si el token esta malo o no existe le decimos que el token esta 
@@ -282,7 +280,7 @@ public class MeshMemoryManager implements Constantes{
             }
             return INVALID_OPERATION;
         } catch (JSONException ex) {
-            System.out.println("Error: Json incompleto o con errores de "
+            cout("Error: Json incompleto o con errores de "
                     + "escritura");
         }
         return INVALID_OPERATION;
@@ -315,7 +313,7 @@ public class MeshMemoryManager implements Constantes{
                 }
             }
         } catch (JSONException ex) {
-            System.out.println("Error: no se ha podido completar el alojo del "
+            cout("Error: no se ha podido completar el alojo del "
                     + "dato");
             return INVALID_OPERATION;
         }
@@ -394,7 +392,7 @@ public class MeshMemoryManager implements Constantes{
                 }
             }
         } catch (JSONException ex) {
-            System.out.println("Error: en escirtua del dato");
+            cout("Error: en escirtua del dato");
             return INVALID_OPERATION;
         }
         return INVALID_OPERATION;
@@ -437,7 +435,7 @@ public class MeshMemoryManager implements Constantes{
                 return newTempJson.toString();
             }
         } catch (JSONException ex) {
-            System.out.println("Error: no se ha podido completar la lectura del "
+            cout("Error: no se ha podido completar la lectura del "
                     + "llamado del:"+ pJsonFromClient);
             return INVALID_OPERATION;
         }
@@ -477,27 +475,11 @@ public class MeshMemoryManager implements Constantes{
                 return RIGHT_OPERATION;
             }
         } catch (JSONException ex) {
-            System.out.println("Error: no se ha podido completar el borrado del"
+            cout("Error: no se ha podido completar el borrado del"
                     + "llamado del:"+ pJsonFromClient);
             return INVALID_OPERATION;
         }
         return INVALID_OPERATION;
-    }
-    
-    /**
-     * Metodo para realizar una coleccion de basura de la memoria que ya no se
-     * ocupa.
-     */
-    private void GarbageCollector(){
-        
-    }
-    
-    /**
-     * metodo para realizar un burping en la memoria para cuando se realice una 
-     * segmentacion.
-     */
-    private void burping(){
-        
     }
     
     /**

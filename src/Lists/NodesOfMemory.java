@@ -6,8 +6,6 @@
 package Lists;
 
 import Logic.Constantes;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -111,7 +109,8 @@ public class NodesOfMemory  implements Constantes{
             JSONObject temp= new JSONObject(_dato);
             returnedNumber= temp.getInt(SIZE);
         } catch (JSONException ex) {
-            Logger.getLogger(NodesOfMemory.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: extraccion del tamaño del dato del Json de uno de los "
+                    + "nodos de memoria.");
         }
         return returnedNumber;
     }

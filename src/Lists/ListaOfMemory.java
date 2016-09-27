@@ -76,8 +76,7 @@ public class ListaOfMemory  implements Constantes{
             _MemoryLeft-=tempData.getInt(SIZE);
             return i;
         } catch (JSONException ex) {
-            System.out.println("Error: no se puede ingresar el nodo en la "
-                    + "memoria del Android");
+            cout("Error: no se puede ingresar el nodo en la memoria del Android");
         }
         return -UNO;
     }

@@ -11,8 +11,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Clase para hacer la escucha de los api que se conectan.
@@ -39,7 +37,8 @@ public class ServerApiListener implements Runnable, Constantes{
             _in= new BufferedReader(new InputStreamReader(
                     _socketToApi.getInputStream()));
         } catch (IOException ex) {
-            Logger.getLogger(ServerApiListener.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: creacion de las variables para escuchar y enviar "
+                    + "mensajes al api.");
         }
     }
     
@@ -84,10 +83,9 @@ public class ServerApiListener implements Runnable, Constantes{
     public void sendToClientApi(String pJsonSendToApi){
         try {
             _out.write(pJsonSendToApi.getBytes());
-            System.out.println("Mensaje enviado: "+ pJsonSendToApi);
+            cout("Mensaje enviado: "+ pJsonSendToApi);
         } catch (IOException ex) {
-            System.out.println("Error:Falla en envio de mensaje, mensaje: "+
-                    pJsonSendToApi);
+            cout("Error:Falla en envio de mensaje, mensaje: "+ pJsonSendToApi);
         }
     }
     
@@ -108,6 +106,7 @@ public class ServerApiListener implements Runnable, Constantes{
                 }
             }
         } catch (IOException ex) {
+            cout("Error: recepcion de mensaje del api");
         }
     }
     

@@ -15,8 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Clase para hacer los listener de los apis conectados que va a enviar la
@@ -75,7 +73,7 @@ public class ServerAndroidListener implements Runnable, Constantes{
     public Socket getNewAndroidSocket(int pSocket){
         Socket temp;
         synchronized(this){
-            temp=_listenerList.get(pSocket);
+            temp=_listenerList.get(pSocket-UNO);
         }
         return temp;
     }
@@ -93,7 +91,7 @@ public class ServerAndroidListener implements Runnable, Constantes{
                     pConnection.getInputStream()));
             returnedMsg=_in.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(ServerAndroidListener.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: recepcion de mensaje a un nodo android");
         }
         return returnedMsg;
     }
@@ -109,7 +107,7 @@ public class ServerAndroidListener implements Runnable, Constantes{
             _out= new DataOutputStream(pConnection.getOutputStream());
             _out.writeUTF(pMsg);
         } catch (IOException ex) {
-            Logger.getLogger(ServerAndroidListener.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: envio de mensaje a un nodo android");
         }
     }
     
@@ -128,7 +126,7 @@ public class ServerAndroidListener implements Runnable, Constantes{
             _out.writeUTF(pMsg);
             returnedMsg=_in.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(ServerAndroidListener.class.getName()).log(Level.SEVERE, null, ex);
+            cout("Error: recepcion y envio de mensaje a un nodo android");
         }
         return returnedMsg;
     }
@@ -141,18 +139,18 @@ public class ServerAndroidListener implements Runnable, Constantes{
         try {
             _server= new ServerSocket(_port);
             synchronized(this){
-                System.out.println("Server creado en puerto "+String.valueOf(_port)+
+                cout("Server creado en puerto "+String.valueOf(_port)+
                     ", en "+InetAddress.getLocalHost().getHostAddress());
             }
             while(true){
                 Socket clientSocket=_server.accept();
                 synchronized(this){
-                    System.out.println("Android aceptado");
+                    cout("Android aceptado");
                     _listenerList.add(clientSocket);
                 }
             }
         } catch (IOException ex) {
-            System.out.println("Error: Falla en proceso de creacion de server "
+            cout("Error: Falla en proceso de creacion de server "
                     + "para Android node");
         }
     }

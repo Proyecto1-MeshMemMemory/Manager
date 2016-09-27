@@ -5,13 +5,13 @@
  */
 package Logic;
 
+import java.util.List;
+
 /**
  *
  * @author betolan
  */
 public interface Constantes {
-    public static final int TOTAL_BYTES=64;
-    
     
     /**
      * letras para uso en el generador tokens
@@ -69,8 +69,15 @@ public interface Constantes {
      */
     public static final int OPERATION_NT=6;
     
-    /*numeros de multiproposito*/
+    /*numeros de multi uso en el proyecto*/
+    public static final int ALIVE_TIME_FOR_TOKENS=120;
+    public static final int MASTER=0;
+    public static final int SLAVE=1;
+    public static final int TOKEN_SIZE=64;
+    public static final int CONNECTED=0;
+    public static final int DESCONNECTED=1;
     
+    /*numeros de multiproposito*/
     public static final int CERO=0;
     public static final int UNO=1;
     public static final int DOS=2;
@@ -81,10 +88,8 @@ public interface Constantes {
     public static final int SIETE=7;
     public static final int OCHO=8;
     public static final int DIEZ=10;
-    public static final int ALIVE_TIME_FOR_TOKENS=120;
-    public static final int MASTER=0;
-    public static final int SLAVE=1;
-    public static final int TOKEN_SIZE=64;
+    
+    
     /* mensajes de retorno para el API*/
     
     public static final String WRONG_TOKEN="{\"check\":2}";
@@ -121,5 +126,11 @@ public interface Constantes {
             temp[i]=LETTERS.charAt(number);
         }
         return new String(temp);
+    }
+    
+    default void cout(String pMsg){
+        synchronized(this){
+            System.out.println(pMsg);
+        }
     }
 }

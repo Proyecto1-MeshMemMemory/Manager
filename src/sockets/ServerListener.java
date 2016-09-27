@@ -6,8 +6,6 @@
 package sockets;
 
 import Logic.Constantes;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -25,8 +23,6 @@ public class ServerListener implements Runnable, Constantes{
     private int _port;
     private ServerSocket _server;
     private List<ServerApiListener> _listenerList;
-    private DataOutputStream _out;
-    private BufferedReader _in;
     
     /**
      * constructor de la clase, recibe el puerto para instancear el 
@@ -84,17 +80,17 @@ public class ServerListener implements Runnable, Constantes{
     public void run() {
         try {
             _server= new ServerSocket(_port);
-            System.out.println("Server creado en puerto "+String.valueOf(_port)+
+            cout("Server creado en puerto "+String.valueOf(_port)+
                     ", en "+InetAddress.getLocalHost().getHostAddress());
             while(true){
                 Socket clientSocket=_server.accept();
-                System.out.println("Cliente aceptado");
+                cout("Cliente aceptado");
                 synchronized(this){
                     _listenerList.add(new ServerApiListener(clientSocket));
                 }
             }
         } catch (IOException ex) {
-            System.out.println("Error: Falla en proceso de creacion de server "
+            cout("Error: Falla en proceso de creacion de server "
                     + "para API");
         }
     }

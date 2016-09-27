@@ -115,7 +115,8 @@ public class TokenList implements Runnable, Constantes{
                 }
                 Thread.sleep(ALIVE_TIME_FOR_TOKENS/DOS);
             } catch (InterruptedException ex) {
-                System.out.println("No se puede poner a dormir el hilo");
+                cout("Error:No se puede poner a dormir el hilo en el la lista "
+                        + "de Tokens");
             }
         }
     }
