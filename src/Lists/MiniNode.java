@@ -6,6 +6,8 @@
 package Lists;
 
 import Logic.Constantes;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -84,5 +86,16 @@ public class MiniNode implements Constantes{
      */
     public Socket getScoket(){
         return _Connetion;
+    }
+    
+    public int ping(){
+        try {
+            DataOutputStream _out= new DataOutputStream(
+                    _Connetion.getOutputStream());
+            _out.writeUTF(RIGHT_OPERATION);
+            return CONNECTED;
+        } catch (IOException ex) {
+            return DESCONNECTED;
+        }
     }
 }
