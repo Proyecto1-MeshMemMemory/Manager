@@ -90,6 +90,41 @@ public class ListaOfMemory  implements Constantes{
     }
     
     /**
+     * metodo para borrar el dato de la lista de memoria.
+     * @param pId dato tipo string.
+     * @return retorna un entero del resultado del intento de la eliminacion, 
+     * cero para una eliminacion o un uno para no eliminacion.
+     */
+    public int deleteNode(String pId){
+        if(_head.getID().equals(pId)){
+            _MemoryLeft-=(_head.getSize());
+            _head=_head.getNext();
+            return DELETED;
+        }
+        NodesOfMemory temp=_head, last=null;
+        while(temp!=null){
+            if(temp.getID().equals(pId))
+                break;
+            last=temp;
+            temp=temp.getNext();
+            
+        }
+        if(temp==null){
+            return NOTHING_DELETED;
+        }
+        else if(temp==_tail){
+            _MemoryLeft-=(temp.getSize());
+            _tail=_tail.getNext();
+            last.setNext(_tail);
+            return DELETED;
+        }
+        _MemoryLeft-=(temp.getSize());
+        temp=temp.getNext();
+        last.setNext(temp);
+        return DELETED;
+    }
+    
+    /**
      * Metodo para cambiar el conteo de referencias en los nodos, recibe un 
      * id del nodo al cual le queremos realizar la operacion y la operacion 
      * querida, aumentar o disminuir el conteo de referencias.
