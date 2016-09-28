@@ -5,7 +5,6 @@
  */
 package Logic;
 
-import java.util.List;
 
 /**
  *
@@ -30,8 +29,8 @@ public interface Constantes {
     public static final String MESSAGE="message";
     public static final String TOKEN="token";
     public static final String SUPER_NODE="SuNd";
-    public static final String SPACE="space";
-    public static final String SIZE="token";
+    public static final String SPACE="espacio";
+    public static final String SIZE="largo";
     public static final String IP="ip";
     public static final String PORT="port";
     public static final String PHONE_NUMBER="numTel";
@@ -71,11 +70,14 @@ public interface Constantes {
     
     /*numeros de multi uso en el proyecto*/
     public static final int ALIVE_TIME_FOR_TOKENS=120;
+    public static final int CHECK_TIME_FOR_NODES=10000;
     public static final int MASTER=0;
     public static final int SLAVE=1;
     public static final int TOKEN_SIZE=64;
     public static final int CONNECTED=0;
     public static final int DESCONNECTED=1;
+    public static final int DELETED=0;
+    public static final int NOTHING_DELETED=1;
     
     /*numeros de multiproposito*/
     public static final int CERO=0;
@@ -89,9 +91,7 @@ public interface Constantes {
     public static final int OCHO=8;
     public static final int DIEZ=10;
     
-    
     /* mensajes de retorno para el API*/
-    
     public static final String WRONG_TOKEN="{\"check\":2}";
     public static final String RIGHT_OPERATION="{\"check\":0}";
     public static final String INVALID_OPERATION="{\"check\":1}";
@@ -128,6 +128,10 @@ public interface Constantes {
         return new String(temp);
     }
     
+    /**
+     * metodo para realizar la impresion de una cadena de chars.
+     * @param pMsg dato tipo string 
+     */
     default void cout(String pMsg){
         synchronized(this){
             System.out.println(pMsg);
