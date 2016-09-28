@@ -13,6 +13,8 @@ import Logic.Constantes;
 import sockets.ServerListener;
 import sockets.ServerApiListener;
 import Lists.TokenList;
+import Logic.GarbageCollect;
+import Logic.MakingPing;
 import java.net.Socket;
 import java.util.List;
 import org.json.JSONException;
@@ -33,6 +35,8 @@ public class MeshMemoryManager implements Constantes{
     private TokenList _tokenList;
     private CircularLinkedList _MemoryList;
     private int _port;
+    private MakingPing _pingMakerToAndroidNodes;
+    private GarbageCollect _garbageCollect;
     
     /**
      * constructor de la clase, recibe un puerto para establecer el 
@@ -49,6 +53,8 @@ public class MeshMemoryManager implements Constantes{
         _countServerListenerAndroid=0;
         _tokenList= new TokenList();
         _MemoryList= new CircularLinkedList();
+        _pingMakerToAndroidNodes= new MakingPing();
+        _garbageCollect= new GarbageCollect();
         (new Thread(_tokenList)).start();
         (new Thread(_serverAPI)).start();
         (new Thread(_serverAndroid)).start();
@@ -60,6 +66,7 @@ public class MeshMemoryManager implements Constantes{
      * todo.
      */
     private void MainLoop(){
+        long firstTime= System.currentTimeMillis(), currentTime;
         while(true){
             //verificamos que hayan nuevas persona agregadas.
             if(_serverAPI.getSizeListListener()>_countServerListenerAPI){
@@ -83,6 +90,14 @@ public class MeshMemoryManager implements Constantes{
                     temp.setFlagListenerFalse();
                 }
             }
+            //seccion para realizar los pings a los nodos
+            currentTime=System.currentTimeMillis();
+            if((currentTime-firstTime)>=CHECK_TIME_FOR_NODES){
+                makePing();
+                makeGarbageCollect();
+                firstTime=System.currentTimeMillis();
+            }
+            
         }
     }
     
@@ -239,16 +254,26 @@ public class MeshMemoryManager implements Constantes{
             if(JsonOperation==OPERATION_AL){
                 return alocating(pJsonFromClient);
             }
-            JSONObject objId=obj.optJSONObject(ID);
             //hacemos la escritura del dato.
-            if(JsonOperation==OPERATION_WR){
+            else if(JsonOperation==OPERATION_WR){
                 return writing(pJsonFromClient);
             }
+            //hacemos una lectura.
+            else if(JsonOperation==OPERATION_RD){
+                return reading(pJsonFromClient);
+            }
+            //hacemos un borrado.
+            else if(JsonOperation==OPERATION_DL){
+                return deleting(pJsonFromClient);
+            }
+            JSONObject objId=obj.optJSONObject(ID);
             int SuperNodeSpace= objId.getInt(SUPER_NODE);
             String MemNodeId= objId.getString(ID);
+            if(SuperNodeSpace>=_MemoryList.getSize())
+                return INVALID_OPERATION;
             for(int i=0; i<SuperNodeSpace; i++)
                 temp=temp.getNext();
-            MiniNode tempMiniNode= temp.getMaster();
+            
             NodesOfMemory tempNodeMemory= temp.getListMemory().getHead();
             while(tempNodeMemory!=null){
                 if(tempNodeMemory.getID().equals(MemNodeId))
@@ -257,17 +282,6 @@ public class MeshMemoryManager implements Constantes{
             }
             if(tempNodeMemory==null)
                 return INVALID_OPERATION;
-            JSONObject newTempJson= new JSONObject();
-            newTempJson.put(SPACE, tempNodeMemory.getSpaceMemory());
-            newTempJson.put(SIZE, tempNodeMemory.getSize());
-            //hacemos una lectura.
-            if(JsonOperation==OPERATION_RD){
-                return reading(pJsonFromClient);
-            }
-            //hacemos un borrado.
-            else if(JsonOperation==OPERATION_DL){
-                return deleting(pJsonFromClient);
-            }
             //hacemos un incremento de referencias.
             else if(JsonOperation==OPERATION_IR){
                 tempNodeMemory.increaseRefCounter();
@@ -344,8 +358,10 @@ public class MeshMemoryManager implements Constantes{
                         break;
                     tempNodeMemory= tempNodeMemory.getNext();
                 }
+                if(tempNodeMemory==null)
+                    return INVALID_OPERATION;
                 JSONObject newTempJson= new JSONObject();
-                newTempJson.put(SPACE, space);
+                newTempJson.put(SPACE, tempNodeMemory.getSpaceMemory());
                 newTempJson.put(SIZE, size);
                 newTempJson.put(ID, CUATRO);
                 newTempJson.put(MESSAGE, obj.get(MESSAGE));
@@ -377,6 +393,8 @@ public class MeshMemoryManager implements Constantes{
                             break;
                         tempNodeMemory= tempNodeMemory.getNext();
                     }
+                    if(tempNodeMemory==null)
+                        return INVALID_OPERATION;
                     JSONObject newTempJson= new JSONObject();
                     newTempJson.put(SPACE, tempNodeMemory.getSpaceMemory());
                     newTempJson.put(SIZE, size);
@@ -483,10 +501,19 @@ public class MeshMemoryManager implements Constantes{
     }
     
     /**
+     * metodo para realizar la collecion de basura.
+     */
+    private void makeGarbageCollect(){
+        _garbageCollect.setMemoryList(_MemoryList);
+        (new Thread(_garbageCollect)).start();
+    }
+    
+    /**
      * metodo apra realizarle ping a los android conectados dando memoria para
      * verificar que aun estan en linea.
      */
     private void makePing(){
-        
+        _pingMakerToAndroidNodes.setMemoryList(_MemoryList);
+        (new Thread(_pingMakerToAndroidNodes)).start();
     }
 }
