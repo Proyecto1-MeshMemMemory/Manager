@@ -10,17 +10,28 @@ import Lists.MiniNode;
 import Lists.SuperNodeMemory;
 
 /**
- *
+ * clase para realizar los pings a los nodos de android.
  * @author ellioth
  */
 public class MakingPing implements Runnable, Constantes{
     
     private CircularLinkedList _circularListToCheck;
     
-    public MakingPing(CircularLinkedList pCircularListToCheck){
-        _circularListToCheck=pCircularListToCheck;
+    /**
+     * constructor de la clase.
+     */
+    public MakingPing(){
     }
 
+    /**
+     * metodo para establecer la lista circular de la memoria que va a 
+     * ayudar a realizar los pings a los nodos de android.
+     * @param pCircularListToCheck 
+     */
+    public void setMemoryList(CircularLinkedList pCircularListToCheck){
+        _circularListToCheck=pCircularListToCheck;
+    }
+    
     /**
      * hilo para realizar el ping a los nodos de Android conectados y elimina
      * los que ya se hayan desconectados.
