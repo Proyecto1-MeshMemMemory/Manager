@@ -69,7 +69,8 @@ public interface Constantes {
     public static final int OPERATION_NT=6;
     
     /*numeros de multi uso en el proyecto*/
-    public static final int ALIVE_TIME_FOR_TOKENS=120;
+    public static final int ALIVE_TIME_FOR_TOKENS=120000;
+    public static final int SLEEPING_THREAD_TIME=30000;
     public static final int CHECK_TIME_FOR_NODES=10000;
     public static final int MASTER=0;
     public static final int SLAVE=1;

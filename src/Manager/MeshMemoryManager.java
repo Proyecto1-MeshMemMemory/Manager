@@ -76,12 +76,12 @@ public class MeshMemoryManager implements Constantes{
             if(_serverAndroid.getSizeListListener()>_countServerListenerAndroid){
                addNewAndroid();
             }
+            List<ServerApiListener> tempListApi=_serverAPI.
+                    getActualListListeners();
             //recorremos todas las personas actuales hasta obtener todos los 
             //mensajes que hayan enviado
-            List<ServerApiListener> tempClientListenerList=_serverAPI.
-                    getActualListListeners();
             for(int i=0; i<_countServerListenerAPI; i++){
-                ServerApiListener temp=tempClientListenerList.get(i);
+                ServerApiListener temp= tempListApi.get(i);
                 //verificamos que haya enviado mensaje nuevo
                 if(temp.getFlagListener()){
                     String newJsonToApiClient=decodeJsonFromClient(
@@ -504,8 +504,10 @@ public class MeshMemoryManager implements Constantes{
      * metodo para realizar la collecion de basura.
      */
     private void makeGarbageCollect(){
-        _garbageCollect.setMemoryList(_MemoryList);
-        (new Thread(_garbageCollect)).start();
+        if(_MemoryList.getSize()>CERO){
+            _garbageCollect.setMemoryList(_MemoryList);
+            (new Thread(_garbageCollect)).start();
+        }
     }
     
     /**
@@ -513,7 +515,14 @@ public class MeshMemoryManager implements Constantes{
      * verificar que aun estan en linea.
      */
     private void makePing(){
-        _pingMakerToAndroidNodes.setMemoryList(_MemoryList);
-        (new Thread(_pingMakerToAndroidNodes)).start();
+        if(_MemoryList.getSize()>CERO){
+            _pingMakerToAndroidNodes.setMemoryList(_MemoryList);
+            (new Thread(_pingMakerToAndroidNodes)).start();
+        }
+    }
+    
+    public static void main(String[] args) {
+        MeshMemoryManager nuevo = new MeshMemoryManager(5001);
+        //while(true);
     }
 }

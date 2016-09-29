@@ -40,13 +40,15 @@ public class TokenList implements Runnable, Constantes{
      * @param pValue a agregar.
      */
     public void add(String pValue){
-        synchronized(this){
-            if(_size==CERO || _head==null){
-                _head=new TokenNode(pValue,System.nanoTime());
+        if(_size==CERO || _head==null){
+            synchronized(this){
+                _head=new TokenNode(pValue,System.currentTimeMillis());
                 _size=UNO;
-                return;
             }
-            TokenNode nuevo = new TokenNode(pValue, System.nanoTime());
+            return;
+        }
+        synchronized(this){
+            TokenNode nuevo = new TokenNode(pValue, System.currentTimeMillis());
             nuevo.setNext(_head);
             _head=nuevo;
             _size++;
@@ -70,12 +72,16 @@ public class TokenList implements Runnable, Constantes{
             nodeToErase= nodeToErase.getNext();
         }
         if(_head==nodeToErase){
-            _head=_head.getNext();
-            _size--;
+            synchronized(this){
+                _head=_head.getNext();
+                _size--;
+            }
             return;
         }
-        last.setNext(nodeToErase.getNext());
-        _size--;
+        synchronized(this){
+            last.setNext(nodeToErase.getNext());
+            _size--;
+        }
     }
      
     /**
@@ -104,16 +110,16 @@ public class TokenList implements Runnable, Constantes{
             try {
                 TokenNode temp=_head;
                 while(temp!=null){
-                    long actualTime= System.nanoTime();
+                    long actualTime= System.currentTimeMillis();
                     for(int i=0; i<_size;i++){
                         if((actualTime-temp.getTimeCreation())>ALIVE_TIME_FOR_TOKENS){
                             delete(i);
-                            System.out.println("Token eliminado");
+                            cout("Token eliminado");
                         }
                         temp=temp.getNext();
                     }
                 }
-                Thread.sleep(ALIVE_TIME_FOR_TOKENS/DOS);
+                Thread.sleep(SLEEPING_THREAD_TIME);
             } catch (InterruptedException ex) {
                 cout("Error:No se puede poner a dormir el hilo en el la lista "
                         + "de Tokens");
